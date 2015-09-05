@@ -30,9 +30,6 @@
         delete options.headers['accept-encoding'];
         if (req.method === 'POST' || req.method === 'PUT') {
             postData = JSON.stringify(req.body);
-            if (postData) {
-                options.headers['Content-Length'] = postData.length;
-            }
         }
         let request = HTTPS.request(options, (response) => {
             console.log('RESPONSE STATUS: ' + response.statusCode);

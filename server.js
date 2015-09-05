@@ -8,7 +8,6 @@
     const SERVER_URL = process.env.SERVER_URL || 'mqa.pge.com';
     const PORT = process.env.PORT || 9090;
     const MY_IP = 'localhost';
-    const CONTENT_TYPE = 'application/json';
     let optionsRequestHandler = (req, res) => {
         var headers = {};
         headers["Access-Control-Allow-Origin"] = "*";
@@ -24,12 +23,11 @@
         let options = {
             'hostname': SERVER_URL,
             'path': req.url,
-            'method': req.method,
-            'headers': {
-                'Content-Type': CONTENT_TYPE
-                //'authorization': req.headers['authorization']
-            }
+            'method': req.method
         };
+        options.headers = req.headers;
+        delete options.headers['host'];
+        delete options.headers['accept-encoding'];
         if (req.method === 'POST' || req.method === 'PUT') {
             postData = JSON.stringify(req.body);
             if (postData) {

@@ -28,8 +28,8 @@
         options.headers = req.headers;
         delete options.headers['host'];
         delete options.headers['accept-encoding'];
-        if (req.method === 'POST' || req.method === 'PUT') {
-            postData = JSON.stringify(req.body);
+        if (req.body) {
+            postData = JSON.stringify();
         }
         let request = HTTPS.request(options, (response) => {
             console.log('RESPONSE STATUS: ' + response.statusCode);

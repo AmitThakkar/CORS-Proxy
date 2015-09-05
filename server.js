@@ -5,7 +5,7 @@
     "use strict";
     const HTTPS = require('https');
     const HTTP = require('http');
-    const SERVER_URL = process.env.SERVER_URL || 'mqa.pge.com';
+    const SERVER_URL = process.env.SERVER_URL || 'www.google.com';
     const PORT = process.env.PORT || 9090;
     const MY_IP = 'localhost';
     let optionsRequestHandler = (req, res) => {

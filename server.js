@@ -3,20 +3,27 @@
  */
 ((require, process, JSON) => {
     "use strict";
+    // Require Modules
     const HTTPS = require('https');
     const HTTP = require('http');
-    const SERVER_URL = process.env.SERVER_URL || 'www.google.com';
+
+    // Actual Server URL
+    const SERVER_URL = process.env.SERVER_URL || 'mqa.pge.com';
+
+    // Proxy NodeJS Server Details
     const PORT = process.env.PORT || 9090;
     const MY_IP = 'localhost';
+
     let optionsRequestHandler = (req, res) => {
         var headers = {};
-        headers["Access-Control-Allow-Origin"] = "*";
+        headers["Access-Control-Allow-Origin"] = req.headers.origin;
         headers["Access-Control-Allow-Methods"] = "POST, GET, PUT, DELETE, OPTIONS";
         headers["Access-Control-Allow-Credentials"] = true;
         headers["Access-Control-Max-Age"] = '86400'; // 24 hours
-        headers["Access-Control-Allow-Headers"] = "X-Requested-With, Access-Control-Allow-Origin, X-HTTP-Method-Override, Content-Type, Authorization, Accept";
+        headers["Access-Control-Allow-Headers"] = "X-RAS-API-USERKEY, cocGUID, SECAPIKEY, PGE_LOGIN_NAME, Content-Type";
         res.writeHead(200, headers);
         res.end();
+        console.log("Processed Request:", req.url, "Method:", req.method);
     };
     let forwardRequest = (req, res) => {
         let postData = "";
@@ -50,9 +57,10 @@
         });
         request.write(postData);
         request.end();
+        console.log("Processed Request:", req.url, "Method:", req.method);
     };
     let requestHandler = (req, res) => {
-        console.log(req.url);
+        console.log("Processing Request:", req.url, "Method:", req.method);
         if (req.method === 'OPTIONS') {
             optionsRequestHandler(req, res);
         } else {

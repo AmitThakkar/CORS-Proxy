@@ -32,7 +32,7 @@
             'path': req.url,
             'method': req.method
         };
-        options.headers = req.headers;
+        options.headers = Object.create(req.headers);
         delete options.headers['host'];
         delete options.headers['accept-encoding'];
         if (req.body) {
@@ -58,6 +58,7 @@
         request.end();
     };
     let requestHandler = (req, res) => {
+        console.log("\n\n\n==============================================================================");
         console.log("Starting Request:", req.url, "Method:", req.method);
         if (req.method === 'OPTIONS') {
             optionsRequestHandler(req, res);

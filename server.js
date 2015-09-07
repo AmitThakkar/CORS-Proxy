@@ -36,17 +36,19 @@
         delete options.headers['host'];
         delete options.headers['accept-encoding'];
         if (req.body) {
-            postData = JSON.stringify();
+            postData = JSON.stringify(req.body);
         }
         let request = HTTPS.request(options, (response) => {
-            console.log('RESPONSE STATUS: ' + response.statusCode);
+            console.log('Request:', req.url, 'RESPONSE STATUS: ' + response.statusCode, 'Method:', req.method);
             response.setEncoding('utf8');
+            response.headers['access-control-allow-origin'] = req.headers.origin;
             res.writeHead(response.statusCode, response.headers);
             response.on('data', function (chunk) {
                 res.write(chunk);
             });
-            response.on('end', function() {
+            response.on('end', function () {
                 res.end();
+                console.log("Completing Request:", req.url, "Method:", req.method);
             });
         });
         request.on('error', function (e) {
@@ -54,10 +56,9 @@
         });
         request.write(postData);
         request.end();
-        console.log("Processed Request:", req.url, "Method:", req.method);
     };
     let requestHandler = (req, res) => {
-        console.log("Processing Request:", req.url, "Method:", req.method);
+        console.log("Starting Request:", req.url, "Method:", req.method);
         if (req.method === 'OPTIONS') {
             optionsRequestHandler(req, res);
         } else {

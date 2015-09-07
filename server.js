@@ -1,6 +1,23 @@
 /**
  * Created by Amit Thakkar on 9/4/15.
  */
+(function (Object) {
+    "use strict";
+    Object.defineProperty(Object.prototype, "extend", {
+        enumerable: false,
+        value: function (from) {
+            var props = Object.getOwnPropertyNames(from);
+            var dest = this;
+            props.forEach(function (name) {
+                if (name in dest) {
+                    var destination = Object.getOwnPropertyDescriptor(from, name);
+                    Object.defineProperty(dest, name, destination);
+                }
+            });
+            return this;
+        }
+    });
+})(Object);
 ((require, process, JSON) => {
     "use strict";
     // Require Modules
@@ -14,6 +31,7 @@
     const PORT = process.env.PORT || 9090;
     const MY_IP = 'localhost';
 
+    let cookie;
     let optionsRequestHandler = (req, res) => {
         var headers = {};
         headers["Access-Control-Allow-Origin"] = req.headers.origin;
@@ -32,17 +50,24 @@
             'path': req.url,
             'method': req.method
         };
-        options.headers = Object.create(req.headers);
+        options.headers = req.headers.extend({});
         delete options.headers['host'];
         delete options.headers['accept-encoding'];
+        if(cookie) {
+            options.headers.cookie = cookie;
+        }
         if (req.body) {
             postData = JSON.stringify(req.body);
         }
         let request = HTTPS.request(options, (response) => {
             console.log('Request:', req.url, 'RESPONSE STATUS: ' + response.statusCode, 'Method:', req.method);
             response.setEncoding('utf8');
-            response.headers['access-control-allow-origin'] = req.headers.origin;
-            res.writeHead(response.statusCode, response.headers);
+            var responseHeaders = response.headers.extend({});
+            responseHeaders['access-control-allow-origin'] = req.headers.origin;
+            if(req.url.match(/login/)) {
+                cookie = responseHeaders['set-cookie'];
+            }
+            res.writeHead(response.statusCode, responseHeaders);
             response.on('data', function (chunk) {
                 res.write(chunk);
             });

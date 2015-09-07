@@ -43,8 +43,7 @@
         res.end();
         console.log("Processed Request:", req.url, "Method:", req.method);
     };
-    let forwardRequest = (req, res) => {
-        let postData = "";
+    let getHeadersFromRequest = (req) => {
         let options = {
             'hostname': SERVER_URL,
             'path': req.url,
@@ -56,6 +55,11 @@
         if(cookie) {
             options.headers.cookie = cookie;
         }
+        return options;
+    };
+    let forwardRequest = (req, res) => {
+        let postData = "";
+        let options = getHeadersFromRequest(req);
         if (req.body) {
             postData = JSON.stringify(req.body);
         }

@@ -40,17 +40,14 @@
         }
         let request = HTTPS.request(options, (response) => {
             console.log('RESPONSE STATUS: ' + response.statusCode);
-            let responseToSend = "", clientheaders;
             response.setEncoding('utf8');
-            clientheaders = response.headers;
+            res.writeHead(response.statusCode, response.headers);
             response.on('data', function (chunk) {
-                responseToSend += chunk;
+                res.write(chunk);
             });
-            setTimeout(function () {
-                res.writeHead(response.statusCode, clientheaders);
-                res.write(responseToSend);
+            response.on('end', function() {
                 res.end();
-            }, 500);
+            });
         });
         request.on('error', function (e) {
             console.log('problem with request: ' + e.message);

@@ -19,7 +19,7 @@
         headers["Access-Control-Allow-Origin"] = req.headers.origin;
         headers["Access-Control-Allow-Methods"] = "POST, GET, PUT, DELETE, OPTIONS";
         headers["Access-Control-Allow-Credentials"] = true;
-        headers["Access-Control-Max-Age"] = '86400'; // 24 hours
+        headers["Access-Control-Max-Age"] = '86400';
         headers["Access-Control-Allow-Headers"] = "X-RAS-API-USERKEY, cocGUID, SECAPIKEY, PGE_LOGIN_NAME, Content-Type";
         res.writeHead(200, headers);
         res.end();
@@ -58,7 +58,7 @@
         request.end();
     };
     let requestHandler = (req, res) => {
-        console.log("\n\n\n==============================================================================");
+        console.log("\n==============================================================================");
         console.log("Starting Request:", req.url, "Method:", req.method);
         if (req.method === 'OPTIONS') {
             optionsRequestHandler(req, res);

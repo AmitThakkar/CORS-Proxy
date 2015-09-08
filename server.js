@@ -65,7 +65,7 @@
             var responseHeaders = response.headers.extend({});
             responseHeaders['access-control-allow-origin'] = req.headers.origin;
             if (responseHeaders && responseHeaders['set-cookie'] && responseHeaders['set-cookie'].length) {
-                responseHeaders['set-cookie'][0] = responseHeaders['set-cookie'][0].replace(/domain=\.pge\.com; secure/, "domain=localhost;");
+                responseHeaders['set-cookie'][0] = responseHeaders['set-cookie'][0].replace(/domain=\.pge\.com; secure/, "");
             }
             res.writeHead(response.statusCode, responseHeaders);
             response.on('data', function (chunk) {

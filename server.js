@@ -31,7 +31,6 @@
     const PORT = process.env.PORT || 9090;
     const MY_IP = 'localhost';
 
-    let cookie;
     let optionsRequestHandler = (req, res) => {
         var headers = {};
         headers["Access-Control-Allow-Origin"] = req.headers.origin;
@@ -52,9 +51,6 @@
         options.headers = req.headers.extend({});
         delete options.headers['host'];
         delete options.headers['accept-encoding'];
-        if(cookie) {
-            options.headers.cookie = cookie;
-        }
         return options;
     };
     let forwardRequest = (req, res) => {
@@ -68,8 +64,8 @@
             response.setEncoding('utf8');
             var responseHeaders = response.headers.extend({});
             responseHeaders['access-control-allow-origin'] = req.headers.origin;
-            if(req.url.match(/login/)) {
-                cookie = responseHeaders['set-cookie'];
+            if (responseHeaders && responseHeaders['set-cookie'] && responseHeaders['set-cookie'].length) {
+                responseHeaders['set-cookie'][0] = responseHeaders['set-cookie'][0].replace(/domain=\.pge\.com; secure/, "domain=localhost;");
             }
             res.writeHead(response.statusCode, responseHeaders);
             response.on('data', function (chunk) {
